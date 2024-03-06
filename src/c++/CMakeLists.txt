@@ -106,8 +106,17 @@ endif() # TRITON_ENABLE_GPU
 # libcurl
 #
 if(TRITON_ENABLE_CC_HTTP OR TRITON_ENABLE_PERF_ANALYZER)
-  find_package(CURL REQUIRED)
-  message(STATUS "Using curl ${CURL_VERSION}")
+  find_package(CURL 7.86 QUIET)
+  if (NOT curl_FOUND)
+    message(STATUS "cURL package not found rebuild is requied")
+    include(FetchContent)
+    FetchContent_Declare(curl
+      URL https://curl.se/download/curl-7.86.0.tar.gz
+      DOWNLOAD_EXTRACT_TIMESTAMP true
+      OVERRIDE_FIND_PACKAGE
+    )
+    FetchContent_MakeAvailable(curl)
+  endif() # NOT curl_FOUND
 endif() # TRITON_ENABLE_CC_HTTP OR TRITON_ENABLE_PERF_ANALYZER
 
 #
